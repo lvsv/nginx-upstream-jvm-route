@@ -1,7 +1,8 @@
-diff -Naur http_orig/ngx_http_upstream.c http/ngx_http_upstream.c
---- http_orig/ngx_http_upstream.c	2017-08-10 21:36:51.237096954 +0300
-+++ http/ngx_http_upstream.c	2017-08-10 21:41:15.027404584 +0300
-@@ -5633,6 +5633,8 @@
+diff --git a/src/http/ngx_http_upstream.c b/src/http/ngx_http_upstream.c
+index 8fc3042e..55d5c8ee 100644
+--- a/src/http/ngx_http_upstream.c
++++ b/src/http/ngx_http_upstream.c
+@@ -5657,6 +5657,8 @@ ngx_http_upstream(ngx_conf_t *cf, ngx_command_t *cmd, void *dummy)
                                           |NGX_HTTP_UPSTREAM_MAX_CONNS
                                           |NGX_HTTP_UPSTREAM_MAX_FAILS
                                           |NGX_HTTP_UPSTREAM_FAIL_TIMEOUT
@@ -10,7 +11,7 @@ diff -Naur http_orig/ngx_http_upstream.c http/ngx_http_upstream.c
                                           |NGX_HTTP_UPSTREAM_DOWN
                                           |NGX_HTTP_UPSTREAM_BACKUP);
      if (uscf == NULL) {
-@@ -5730,9 +5732,9 @@
+@@ -5754,9 +5756,9 @@ ngx_http_upstream_server(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
      ngx_http_upstream_srv_conf_t  *uscf = conf;
  
      time_t                       fail_timeout;
@@ -22,7 +23,7 @@ diff -Naur http_orig/ngx_http_upstream.c http/ngx_http_upstream.c
      ngx_uint_t                   i;
      ngx_http_upstream_server_t  *us;
  
-@@ -5748,7 +5750,10 @@
+@@ -5772,7 +5774,10 @@ ngx_http_upstream_server(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
      weight = 1;
      max_conns = 0;
      max_fails = 1;
@@ -33,7 +34,7 @@ diff -Naur http_orig/ngx_http_upstream.c http/ngx_http_upstream.c
  
      for (i = 2; i < cf->args->nelts; i++) {
  
-@@ -5797,6 +5802,21 @@
+@@ -5821,6 +5826,21 @@ ngx_http_upstream_server(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
              continue;
          }
  
@@ -55,7 +56,7 @@ diff -Naur http_orig/ngx_http_upstream.c http/ngx_http_upstream.c
          if (ngx_strncmp(value[i].data, "fail_timeout=", 13) == 0) {
  
              if (!(uscf->flags & NGX_HTTP_UPSTREAM_FAIL_TIMEOUT)) {
-@@ -5815,6 +5835,22 @@
+@@ -5839,6 +5859,22 @@ ngx_http_upstream_server(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
              continue;
          }
  
@@ -78,7 +79,7 @@ diff -Naur http_orig/ngx_http_upstream.c http/ngx_http_upstream.c
          if (ngx_strcmp(value[i].data, "backup") == 0) {
  
              if (!(uscf->flags & NGX_HTTP_UPSTREAM_BACKUP)) {
-@@ -5860,7 +5896,9 @@
+@@ -5884,7 +5920,9 @@ ngx_http_upstream_server(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
      us->weight = weight;
      us->max_conns = max_conns;
      us->max_fails = max_fails;
@@ -88,19 +89,21 @@ diff -Naur http_orig/ngx_http_upstream.c http/ngx_http_upstream.c
  
      return NGX_CONF_OK;
  
-diff -Naur http_orig/ngx_http_upstream.h http/ngx_http_upstream.h
---- http_orig/ngx_http_upstream.h	2017-08-10 21:36:51.237096954 +0300
-+++ http/ngx_http_upstream.h	2017-08-10 21:42:09.797456637 +0300
-@@ -98,6 +98,8 @@
-     ngx_uint_t                       max_fails;
-     time_t                           fail_timeout;
+diff --git a/src/http/ngx_http_upstream.h b/src/http/ngx_http_upstream.h
+index c2f4dc0b..2da166ca 100644
+--- a/src/http/ngx_http_upstream.h
++++ b/src/http/ngx_http_upstream.h
+@@ -101,6 +101,9 @@ typedef struct {
      ngx_msec_t                       slow_start;
+     ngx_uint_t                       down;
+ 
 +    ngx_uint_t                       max_busy;
 +    ngx_str_t                        srun_id;
- 
-     unsigned                         down:1;
++
      unsigned                         backup:1;
-@@ -113,6 +115,8 @@
+ 
+     NGX_COMPAT_BEGIN(6)
+@@ -114,6 +117,8 @@ typedef struct {
  #define NGX_HTTP_UPSTREAM_FAIL_TIMEOUT  0x0008
  #define NGX_HTTP_UPSTREAM_DOWN          0x0010
  #define NGX_HTTP_UPSTREAM_BACKUP        0x0020
